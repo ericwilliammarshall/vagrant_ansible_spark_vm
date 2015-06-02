@@ -1,0 +1,40 @@
+---
+
+
+- name: "Be sure libselinux-python are installed to avoid errors"
+  yum: name=libselinux-python state=present
+
+- name: "Disable iptables"
+  service: name=iptables enabled=no state=stopped
+  ignore_errors: True
+
+- name: "Disable iptables"
+  service: name=iptables enabled=no state=stopped
+
+- name: "Disable ip6tables"
+  service: name=ip6tables enabled=no state=stopped
+
+- name: "Minimize Swapping with swappiness=1"
+  sysctl: name=vm.swappiness value=1 state=present reload=yes
+  ignore_errors: True
+
+- name: "Install EPEL repo"
+  yum: name=http://mirror.nexcess.net/epel/6/x86_64/epel-release-6-8.noarch.rpm state=present
+
+- name: "Install wget"
+  yum: name="wget" state=latest
+
+- name: "Install vim"
+  yum: name="vim" state=latest
+
+- name: "Install build tools"
+  yum: name="@Development tools" state=latest
+
+- name: "Install tmux ( epel )"
+  yum: name="tmux" state=latest
+
+- name: "Install openssl"
+  yum: name="openssl" state=latest
+
+#- name: "Update all to latest o_O"
+#  yum: name=* state=latest

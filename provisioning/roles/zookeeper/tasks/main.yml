@@ -1,0 +1,24 @@
+---
+
+- name: "Install hortonworks hadoop repo file"
+  copy: src=etc/yum.repos.d/hdp.repo dest=/etc/yum.repos.d/hdp.repo owner=root group=root mode=0644
+  ignore_errors: True
+
+- name: "Install zookeeper packages via yum"
+  yum: pkg=zookeeper state=installed
+
+- name: "Create directories for hadoop zookeeper"
+  file: path={{item}} state=directory owner=zookeeper group=hadoop mode=0750
+  with_items:
+        - /grid/hadoop/zookeeper
+        - /grid/hadoop/zookeeper/data
+        - /var/log/zookeeper
+        - /var/run/zookeeper
+
+- name: "Deploy zookeeper config to /grid/hadoop/zookeeper/data"
+  template: src="grid/hadoop/zookeeper/data/myid"
+        dest=/grid/hadoop/zookeeper/data/myid
+        owner=root
+        group=root
+        mode=0644
+

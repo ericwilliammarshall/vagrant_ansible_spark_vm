@@ -1,0 +1,86 @@
+---
+
+- name: "Install hortonworks hadoop repo file"
+  copy: src=etc/yum.repos.d/hdp.repo dest=/etc/yum.repos.d/hdp.repo owner=root group=root mode=0644
+  ignore_errors: True
+
+- name: "Install hortonworks hadoop packages via yum"
+  yum: pkg={{item}} state=installed
+  with_items:
+        - hadoop 
+        - hadoop-hdfs 
+        - hadoop-libhdfs 
+        - hadoop-yarn 
+        - hadoop-mapreduce 
+        - hadoop-client 
+
+- name: "Install snappy compression packages via yum"
+  yum: pkg={{item}} state=installed
+  with_items:
+        - snappy 
+        - snappy-devel
+
+- name: "Install lzo compression packages via yum"
+  yum: pkg={{item}} state=installed
+  with_items:
+        - lzo 
+        - lzo-devel 
+        - hadooplzo 
+        - hadooplzo-native
+
+
+- name: "Create directories for hadoop"
+  file: path={{item}} state=directory owner=root group=root mode=0755
+  with_items:
+        - /grid
+        - /grid/hadoop
+        - /grid/hadoop/hdfs
+        - /grid/hadoop/hdfs/nn
+        - /grid/hadoop/hdfs/dn
+        - /grid/hadoop/hdfs/snn
+        - /grid/hadoop/yarn
+        - /grid/hadoop/yarn/local
+        - /grid/hadoop/yarn/logs
+        - /grid/hadoop/oozie
+        - /grid/hadoop/oozie/data
+
+
+- name: "Create directories for hadoop name node and secondary name node"
+  file: path={{item}} state=directory owner=hdfs group=hadoop mode=0755
+  with_items:
+        - /grid
+        - /grid/hadoop
+        - /grid/hadoop/hdfs
+        - /grid/hadoop/hdfs/nn
+        - /grid/hadoop/hdfs/snn
+        - /var/log/hadoop
+        - /var/log/hadoop/hdfs
+        - /var/run/hadoop
+        - /var/run/hadoop/hdfs
+
+- name: "Create directories for hadoop data node"
+  file: path={{item}} state=directory owner=hdfs group=hadoop mode=0750
+  with_items:
+        - /grid/hadoop/hdfs/dn
+
+- name: "Create directories for hadoop yarn"
+  file: path={{item}} state=directory owner=yarn group=hadoop mode=0750
+  with_items:
+        - /grid/hadoop/yarn
+        - /grid/hadoop/yarn/local
+        - /grid/hadoop/yarn/logs
+        - /var/log/hadoop/yarn
+        - /var/run/hadoop/yarn
+
+- name: "Create directories for hadoop mapred"
+  file: path={{item}} state=directory owner=mapred group=hadoop mode=0750
+  with_items:
+        - /var/log/hadoop/mapred
+        - /var/run/hadoop/mapred
+
+#- name: "Create directories for hadoop oozie"
+#  file: path={{item}} state=directory owner=oozie group=hadoop mode=0750
+#  with_items:
+#        - /grid/hadoop/oozie
+#        - /grid/hadoop/oozie/data
+

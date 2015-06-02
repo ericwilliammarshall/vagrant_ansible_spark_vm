@@ -1,0 +1,1 @@
+bigwheel-M10-2.0.8.0 is branched from bigwheel-GA-2.0.6.0 (SHA1 e5ebd14487e87b633e5a3bed4420a00b9b32eb8e) @ git@github.com:hortonworks/manual_Install.git

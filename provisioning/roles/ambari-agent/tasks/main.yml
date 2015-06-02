@@ -1,0 +1,26 @@
+---
+
+- name: "Add Ambari Repo"
+  copy: src=etc/yum.repos.d/ambari.repo
+        dest=/etc/yum.repos.d/ambari.repo
+        owner=root
+        group=root
+        mode=0644
+
+- name: "Add Ambari Repo key"
+  command: "rpm --import http://public-repo-1.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins"
+
+- name: "Install Ambari Manager Agent"
+  yum: name=ambari-agent state=present
+
+- name: "Configure Ambari Manager Agent"
+  template: src=etc/ambari-agent/conf/ambari.ini
+            dest=/etc/ambari-agent/conf/ambari.ini
+            owner=root
+            group=root
+            mode=0644
+#  notify:
+#    - restart abmari-agent
+
+- name: "Restart Ambari Manager Agent"
+  service: name=ambari-agent state=restarted

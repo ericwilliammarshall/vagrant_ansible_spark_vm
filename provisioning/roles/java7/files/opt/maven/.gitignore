@@ -1,0 +1,11 @@
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.tgz
+*.rpm
+!.vagrant

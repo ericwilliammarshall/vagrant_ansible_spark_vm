@@ -1,0 +1,28 @@
+---
+
+- name: "Create /opt/spark"
+  file: path=/opt/spark owner=root group=root state=directory
+
+- name: "Check for current symlink to spark 1.3.1"
+  shell: "find -L /opt/spark/current -maxdepth 0 -samefile /opt/apache-cassandra/spark-1.3.1 && echo Installed || echo Missing"
+  register: spark131installed
+
+- name: "Copy spark.tgz to /tmp"
+  copy: src=tmp/spark-1.3.1-bin-hadoop2.6.tgz dest=/tmp/spark.tgz
+  when: spark131installed.stdout == 'Missing'
+
+- name: "Deploy to /opt/spark"
+  command: "tar -zxf /tmp/spark.tgz -C /opt/spark"
+  when: spark131installed.stdout == 'Missing'
+
+- name: "Create spark symlink"
+  file: src=/opt/spark/spark-1.3.1-bin-hadoop2.6 dest=/opt/spark/current owner=root group=root state=link
+
+- name: "World writable spark log dir"
+  file: path=/opt/spark/current/logs state=directory mode=0777 owner=root group=root
+
+- name: "Add YARN_CONF_DIR to env"
+  copy: src=etc/profile.d/spark.sh dest=/etc/profile.d/spark.sh owner=root group=root mode=0644
+
+- name: "Add spark-defaults.conf"
+  copy: src=opt/conf/spark-defaults.conf dest=/opt/spark/current/conf/spark-defaults.conf owner=root group=root mode=0644

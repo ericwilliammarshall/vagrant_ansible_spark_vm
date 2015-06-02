@@ -1,0 +1,5 @@
+---
+# Add the user 'johnd' with a specific uid and a primary group of 'admin'
+# passwd = 'Sp4rKy!'
+ - user: name=sparky comment="spark user" uid=1040  password='$6$rounds=100000$rzxXtss5UZnWAh4B$9atDlw/VLx9MyAgIzFatbv8.JTQYeTbJ4uc3XUA7YjOzdAS5f4ILwDVvg5B7RraYN/9HGeHo4bticWYghXKOT.'
+
