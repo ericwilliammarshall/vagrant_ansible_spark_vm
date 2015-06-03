@@ -34,6 +34,7 @@
   with_items:
         - /grid
         - /grid/hadoop
+        - /grid/hadoop/data
         - /grid/hadoop/hdfs
         - /grid/hadoop/hdfs/nn
         - /grid/hadoop/hdfs/dn
@@ -57,6 +58,9 @@
         - /var/log/hadoop/hdfs
         - /var/run/hadoop
         - /var/run/hadoop/hdfs
+        - /var/data
+        - /var/data/hadoop
+        - /var/data/hadoop/hdfs
 
 - name: "Create directories for hadoop data node"
   file: path={{item}} state=directory owner=hdfs group=hadoop mode=0750
@@ -84,3 +88,18 @@
 #        - /grid/hadoop/oozie
 #        - /grid/hadoop/oozie/data
 
+- name: "Copy core-site.xml"
+  copy: src=etc/hadoop/conf/core-site.xml dest=/etc/hadoop/conf/core-site.xml owner=root group=root mode=0644
+
+- name: "Copy hdfs-site.xml"
+  copy: src=etc/hadoop/conf/hdfs-site.xml dest=/etc/hadoop/conf/hdfs-site.xml owner=root group=root mode=0644
+
+- name: "Copy yarn-site.xml"
+  copy: src=etc/hadoop/conf/yarn-site.xml dest=/etc/hadoop/conf/yarn-site.xml owner=root group=root mode=0644
+
+- name: "Link hadoop-env.sh to /etc/profile.d"
+  file: src=/etc/hadoop/conf/hadoop-env.sh dest=/etc/profile.d/hadoop-env.sh state=link
+  
+  
+- name: "Setup and start hadoop"
+  script: first-start.sh 
