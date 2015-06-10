@@ -1,6 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Put site-specific property overrides in this file. -->
 <configuration>
-    <property>
-        <name>mapreduce.framework.name</name>
-        <value>yarn</value>
-    </property>
+
+  <property>
+   <name>yarn.resourcemanager.scheduler.class</name>
+   <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</value>
+  </property>
+  <property>
+    <name>yarn.application.classpath</name>
+	<value>/etc/hadoop/conf,/etc/hadoop/conf,/etc/hadoop/conf,/usr/hdp/2.2.4.2-2/hadoop/lib/*,/usr/hdp/2.2.4.2-2/hadoop-hdfs/./,/usr/hdp/2.2.4.2-2/hadoop-hdfs/lib/*,/usr/hdp/2.2.4.2-2/hadoop-hdfs/.//*,/usr/hdp/2.2.4.2-2/hadoop-yarn/lib/*,/usr/hdp/2.2.4.2-2/hadoop-yarn/.//*,/usr/hdp/2.2.4.2-2/hadoop-mapreduce/lib/*,/usr/hdp/2.2.4.2-2/hadoop-mapreduce/.//*,/usr/share/java/mysql-connector-java-5.1.17.jar,/usr/share/java/mysql-connector-java.jar,/usr/hdp/2.2.4.2-2/hadoop-mapreduce/*,/usr/lib/tez/*,/usr/lib/tez/lib/*,/etc/tez/conf,/usr/share/java/mysql-connector-java-5.1.17.jar,/usr/share/java/mysql-connector-java.jar,/usr/hdp/2.2.4.2-2/hadoop-mapreduce/*,/usr/lib/tez/*,/usr/lib/tez/lib/*,/etc/tez/conf,/usr/hdp/2.2.4.2-2/hadoop-yarn/.//*,/usr/hdp/2.2.4.2-2/hadoop-yarn/lib/*</value>
+  </property>
+  <property>
+   <name>yarn.resourcemanager.resource-tracker.address</name>
+   <value>127.0.0.1:8025</value>
+  </property>
+  <property>
+   <name>yarn.resourcemanager.scheduler.address</name>
+   <value>127.0.0.1:8030</value>
+  </property>
+  <property>
+   <name>yarn.resourcemanager.address</name>
+   <value>127.0.0.1:8050</value>
+  </property>
+  <property>
+   <name>yarn.resourcemanager.admin.address</name>
+   <value>127.0.0.1:8141</value>
+  </property>
+  <property>
+   <name>yarn.nodemanager.local-dirs</name>
+   <value>/grid/hadoop/yarn/local</value>
+   <description>Comma separated list of paths</description>
+  </property>
+  <property>
+   <name>yarn.nodemanager.log-dirs</name>
+   <value>/grid/hadoop/yarn/log</value>
+  </property>
+  <property>
+   <name>yarn.log.server.url</name>
+   <value>http://127.0.0.1:19888/jobhistory/logs/ </value>
+   <description>URL for job history server</description>
+  </property>
+  <property>
+   <name>yarn.resourcemanager.webapp.address</name>
+   <value>127.0.0.1:8088</value>
+  </property>
+  
 </configuration>

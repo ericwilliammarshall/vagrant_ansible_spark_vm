@@ -29,22 +29,6 @@
         - hadooplzo-native
 
 
-- name: "Create directories for hadoop"
-  file: path={{item}} state=directory owner=root group=root mode=0755
-  with_items:
-        - /grid
-        - /grid/hadoop
-        - /grid/hadoop/data
-        - /grid/hadoop/hdfs
-        - /grid/hadoop/hdfs/nn
-        - /grid/hadoop/hdfs/dn
-        - /grid/hadoop/hdfs/snn
-        - /grid/hadoop/yarn
-        - /grid/hadoop/yarn/local
-        - /grid/hadoop/yarn/logs
-        - /grid/hadoop/oozie
-        - /grid/hadoop/oozie/data
-
 
 - name: "Create directories for hadoop name node and secondary name node"
   file: path={{item}} state=directory owner=hdfs group=hadoop mode=0755
@@ -57,10 +41,18 @@
         - /var/log/hadoop
         - /var/log/hadoop/hdfs
         - /var/run/hadoop
+        - /grid/hadoop/oozie
+        - /grid/hadoop/oozie/data
         - /var/run/hadoop/hdfs
         - /var/data
+        - /grid/hadoop/data
         - /var/data/hadoop
         - /var/data/hadoop/hdfs
+
+- name: "Create directories for hadoop name node and secondary name node"
+  file: path={{item}} state=directory owner=hdfs group=hadoop mode=0775
+  with_items:
+        - /usr/hdp/2.2.4.2-2/hadoop/logs
 
 - name: "Create directories for hadoop data node"
   file: path={{item}} state=directory owner=hdfs group=hadoop mode=0750
@@ -68,18 +60,24 @@
         - /grid/hadoop/hdfs/dn
 
 - name: "Create directories for hadoop yarn"
-  file: path={{item}} state=directory owner=yarn group=hadoop mode=0750
+  file: path={{item}} state=directory owner=yarn group=hadoop mode=0770
   with_items:
         - /grid/hadoop/yarn
         - /grid/hadoop/yarn/local
-        - /grid/hadoop/yarn/logs
         - /var/log/hadoop/yarn
+        - /var/log/hadoop/hadoop-yarn
+        - /var/run/hadoop-yarn
+        - /var/run/hadoop-yarn/yarn
         - /var/run/hadoop/yarn
+        - /var/log/hadoop-yarn
+        - /var/log/hadoop-yarn/yarn
+        - /usr/hdp/2.2.4.2-2/hadoop-yarn/logs 
 
 - name: "Create directories for hadoop mapred"
   file: path={{item}} state=directory owner=mapred group=hadoop mode=0750
   with_items:
         - /var/log/hadoop/mapred
+        - /var/log/hadoop-mapreduce
         - /var/run/hadoop/mapred
 
 #- name: "Create directories for hadoop oozie"
@@ -89,17 +87,96 @@
 #        - /grid/hadoop/oozie/data
 
 - name: "Copy core-site.xml"
-  copy: src=etc/hadoop/conf/core-site.xml dest=/etc/hadoop/conf/core-site.xml owner=root group=root mode=0644
+  copy: src=etc/hadoop/conf/core-site.xml dest=/etc/hadoop/conf/core-site.xml owner=hdfs group=hadoop mode=0644
 
 - name: "Copy hdfs-site.xml"
-  copy: src=etc/hadoop/conf/hdfs-site.xml dest=/etc/hadoop/conf/hdfs-site.xml owner=root group=root mode=0644
+  copy: src=etc/hadoop/conf/hdfs-site.xml dest=/etc/hadoop/conf/hdfs-site.xml owner=hdfs group=hadoop mode=0644
+
+- name: "Copy mapred-site.xml"
+  copy: src=etc/hadoop/conf/mapred-site.xml dest=/etc/hadoop/conf/mapred-site.xml owner=mapred group=hadoop mode=0644
 
 - name: "Copy yarn-site.xml"
-  copy: src=etc/hadoop/conf/yarn-site.xml dest=/etc/hadoop/conf/yarn-site.xml owner=root group=root mode=0644
+  copy: src=etc/hadoop/conf/yarn-site.xml dest=/etc/hadoop/conf/yarn-site.xml owner=yarn group=hadoop mode=0644
+
+- name: "Copy yarn-env.sh"
+  copy: src=etc/hadoop/conf/yarn-env.sh dest=/etc/hadoop/conf/yarn-env.sh owner=yarn group=hadoop mode=0755
+
+#- name: "Copy hadoop-site.xml"
+#  copy: src=etc/hadoop/conf/hadoop-site.xml dest=/etc/hadoop/conf/hadoop-site.xml owner=hdfs group=hadoop mode=0755
+
+- name: "Copy hadoop-env.sh"
+  copy: src=etc/hadoop/conf/hadoop-env.sh dest=/etc/hadoop/conf/hadoop-env.sh owner=hdfs group=hadoop mode=0755
 
 - name: "Link hadoop-env.sh to /etc/profile.d"
   file: src=/etc/hadoop/conf/hadoop-env.sh dest=/etc/profile.d/hadoop-env.sh state=link
+
+- name: "Link yarn-env.sh to /etc/profile.d"
+  file: src=/etc/hadoop/conf/yarn-env.sh dest=/etc/profile.d/yarn-env.sh state=link
   
-  
-- name: "Setup and start hadoop"
-  script: first-start.sh 
+#- name: "Setup and start hadoop"
+#  script: first-start.sh 
+
+- name: "format hdfs file system"
+  command: /usr/hdp/current/hadoop-hdfs-namenode/../hadoop/bin/hdfs namenode -format
+  sudo: yes
+  sudo_user: hdfs
+  args: 
+        creates: /tmp/.dfs_formatted
+
+- name: "start the namenode"
+  command: /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ start namenode
+  sudo: yes
+  sudo_user: hdfs
+  args:
+        creates: /tmp/.nn_started
+
+- name: "start the secondary namenode"
+  command: /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ start secondarynamenode
+  sudo: yes
+  sudo_user: hdfs
+  args:
+   creates: /tmp/.snn_started
+
+- name: "start the datanode"
+  command: /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ start datanode
+  sudo: yes
+  sudo_user: hdfs
+  args:
+   creates: /tmp/.dn_started
+
+- name: "make /mapred"
+  command: /usr/hdp/2.2.4.2-2/hadoop-hdfs/bin/hdfs dfs -mkdir /mapred
+  sudo: yes
+  sudo_user: hdfs
+
+- name: "make hdfs directory /user/sparks"
+  command: /usr/hdp/2.2.4.2-2/hadoop-hdfs/bin/hdfs dfs -mkdir -p /user/sparks
+  sudo: yes
+  sudo_user: hdfs
+
+- name: "chown /mapred"
+  command: /usr/hdp/2.2.4.2-2/hadoop-hdfs/bin/hdfs dfs -chown -R mapred /mapred
+  sudo: yes
+  sudo_user: hdfs
+
+- name: "chown /sparks"
+  command: /usr/hdp/2.2.4.2-2/hadoop-hdfs/bin/hdfs dfs -chown -R sparks /user/sparks
+  sudo: yes
+  sudo_user: hdfs
+- name: Adding user sparks to hadoop
+  user: name=sparks groups=hadoop append=yes
+
+- name: "start resource manager"
+  command: /usr/hdp/2.2.4.2-2/hadoop-yarn/sbin/yarn-daemon.sh --config /etc/hadoop/conf/ start resourcemanager
+  sudo: yes
+  sudo_user: yarn
+  args:
+   creates: /tmp/.rm_started
+
+- name: "start node manager"
+  command: /usr/hdp/2.2.4.2-2/hadoop-yarn/sbin/yarn-daemon.sh --config /etc/hadoop/conf/ start nodemanager
+  sudo: yes
+  sudo_user: yarn
+  args:
+   creates: /tmp/.nm_started
+

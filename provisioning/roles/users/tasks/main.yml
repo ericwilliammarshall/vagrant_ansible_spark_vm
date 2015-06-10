@@ -1,5 +1,10 @@
 ---
-# Add the user 'johnd' with a specific uid and a primary group of 'admin'
-# passwd = 'Sp4rKy!'
- - user: name=sparky comment="spark user" uid=1040  password='$6$rounds=100000$rzxXtss5UZnWAh4B$9atDlw/VLx9MyAgIzFatbv8.JTQYeTbJ4uc3XUA7YjOzdAS5f4ILwDVvg5B7RraYN/9HGeHo4bticWYghXKOT.'
+# passwd = 'Sp4rKs!'
+- name: "add sparks user"
+#  user: name=sparks comment="login user" uid=1040  password='$6$rounds=100000$rzxXtss5UZnWAh4B$9atDlw/VLx9MyAgIzFatbv8.JTQYeTbJ4uc3XUA7YjOzdAS5f4ILwDVvg5B7RraYN/9HGeHo4bticWYghXKOT.'
+# passwd = ' ' < one blank space
+  user: name=sparks comment="login user" uid=1040  password='$6$h7CcXwO1$14ZA6qggoyS.ZqOvae1uBywWtXTlvW4kqi/oZHgVgO4IVuGdGRflDA/x1KCtWd5uKBjkNyu5q4vzGNVSHHddF1'
+
+- name: "give user sudo access"
+  lineinfile: "dest=/etc/sudoers state=present  line='sparks ALL=(ALL) NOPASSWD: ALL'"
 

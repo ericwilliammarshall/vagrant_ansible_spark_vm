@@ -1,0 +1,11 @@
+---
+
+- name: "Create /opt/scala"
+  file: path=/opt/scala owner=root group=root state=directory
+
+- name: "Copy scala rpm to /tmp"
+  copy: src=tmp/scala-2.10.5.rpm dest=/tmp/scala-2.10.5.rpm
+
+- name: "Deploy scala"
+  yum: name='/tmp/scala-2.10.5.rpm' state=present
+

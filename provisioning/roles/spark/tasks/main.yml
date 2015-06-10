@@ -1,5 +1,7 @@
 ---
 
+- name: "Add spark user"
+  user: name=spark uid=1000 group=hadoop
 - name: "Create /opt/spark"
   file: path=/opt/spark owner=root group=root state=directory
 
@@ -15,6 +17,13 @@
   command: "tar -zxf /tmp/spark.tgz -C /opt/spark"
   when: spark131installed.stdout == 'Missing'
 
+- name: "Create needed directories for spark"
+  file: path={{item}} state=directory  mode=0750
+  with_items:
+        - /var/log/hadoop/mapred
+        - /var/log/spark
+        - /var/run/spark
+
 - name: "Create spark symlink"
   file: src=/opt/spark/spark-1.3.1-bin-hadoop2.6 dest=/opt/spark/current owner=root group=root state=link
 
@@ -23,6 +32,15 @@
 
 - name: "Add YARN_CONF_DIR to env"
   copy: src=etc/profile.d/spark.sh dest=/etc/profile.d/spark.sh owner=root group=root mode=0644
+
+- name: "Copy slaves list to conf directory"
+  copy: src=opt/conf/slaves tmp/spark-1.3.1-bin-hadoop2.6.tgz dest=/opt/spark/spark-1.3.1-bin-hadoop2.6/conf/slaves
+
+- name: "Add conf"
+  copy: src=opt/conf/spark-env.sh dest=/opt/spark/spark-1.3.1-bin-hadoop2.6/conf/spark-env.sh mode=0644
+
+- name: "Add spark-env to env via sym link"
+  file: src=/opt/spark/spark-1.3.1-bin-hadoop2.6/conf/spark-env.sh dest=/etc/profile.d/spark-env.sh owner=root group=root state=link
 
 - name: "Add spark-defaults.conf"
   copy: src=opt/conf/spark-defaults.conf dest=/opt/spark/current/conf/spark-defaults.conf owner=root group=root mode=0644

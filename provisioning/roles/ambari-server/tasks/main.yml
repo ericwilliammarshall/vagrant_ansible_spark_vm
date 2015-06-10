@@ -19,7 +19,8 @@
 
 - name: "Initialize postgresql db"
   shell: "/sbin/service postgresql initdb"
-  ignore_errors: True
+  args:
+        creates: /usr/share/pgsql/.db_init
 
 - name: "Start Ambari Manager postgresql DB"
   service: name=postgresql state=started

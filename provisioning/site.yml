@@ -6,6 +6,7 @@
     - common
     - users
     - java7
+    - scala
 #    - ambari-agent
 #    - ambari-server
     - zookeeper
