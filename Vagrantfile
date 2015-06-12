@@ -14,7 +14,9 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "centos6.6"
   config.vm.network :forwarded_port, guest: 22, host: 2200, id: 'ssh'
-  config.vm.network :forwarded_port, guest: 8080, host: 8080, id: 'ambari'
+  config.vm.network :forwarded_port, guest: 8080, host: 8080, id: 'spark master'
+  config.vm.network :forwarded_port, guest: 8080, host: 4040, id: 'spark client'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
