@@ -18,9 +18,8 @@
   when: spark131installed.stdout == 'Missing'
 
 - name: "Create needed directories for spark"
-  file: path={{item}} state=directory  mode=0750
+  file: path={{item}} state=directory  mode=0750 owner=spark 
   with_items:
-        - /var/log/hadoop/mapred
         - /var/log/spark
         - /var/run/spark
 
@@ -44,3 +43,13 @@
 
 - name: "Add spark-defaults.conf"
   copy: src=opt/conf/spark-defaults.conf dest=/opt/spark/current/conf/spark-defaults.conf owner=root group=root mode=0644
+
+- name: "Change spark logging level to console"
+  copy: src=opt/conf/log4j.properties dest=/opt/spark/current/conf/log4j.properties
+
+- name: "start stand-alone spark master"
+  command: /opt/spark/current/sbin/start-master.sh 
+  sudo: yes
+  sudo_user: spark
+  args:
+   creates: /tmp/.spark_started

@@ -33,11 +33,14 @@
 #- name: "Set locale to US"
 #  locale_gen: name=LANG=en_US.UTF-8 state=present
 
-- name: "Add gui"
-  #yum: name={{item}} state=present
-  yum: name='@KDE desktop' state=present
-  yum: name='@X Window System' state=present
+- name: "Add fonts"
   yum: name='@Fonts' state=present
+
+- name: "Add gui"
+  yum: name='@X Window System' state=present
+
+- name: "Add desktop"
+  yum: name='@KDE desktop' state=present
 
 - name: "Install firefox"
   yum: name="firefox" state=latest

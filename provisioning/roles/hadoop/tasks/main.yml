@@ -47,6 +47,7 @@
         - /var/log/hadoop
         - /var/log/hadoop/hdfs
         - /var/run/hadoop
+        - /var/log/hadoop/mapred
         - /grid/hadoop/oozie
         - /grid/hadoop/oozie/data
         - /var/run/hadoop/hdfs
