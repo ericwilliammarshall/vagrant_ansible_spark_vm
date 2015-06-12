@@ -5,23 +5,29 @@
   ignore_errors: True
 
 - name: "Install hortonworks hadoop packages via yum"
-  yum: pkg={{item}} state=installed
-  with_items:
-        - hadoop 
-        - hadoop-hdfs 
-        - hadoop-libhdfs 
-        - hadoop-yarn 
-        - hadoop-mapreduce 
-        - hadoop-client 
+  yum: pkg=hadoop           state=present
+  yum: pkg=hadoop-hdfs      state=present
+  yum: pkg=hadoop-libhdfs   state=present
+  yum: pkg=hadoop-yarn      state=present
+  yum: pkg=hadoop-mapreduce state=present
+  yum: pkg=hadoop-client    state=present
+  #yum: pkg={{item}} state=present
+  #with_items:
+  #      - hadoop 
+  #      - hadoop-hdfs 
+  #      - hadoop-libhdfs 
+  #      - hadoop-yarn 
+  #      - hadoop-mapreduce 
+  #      - hadoop-client 
 
 - name: "Install snappy compression packages via yum"
-  yum: pkg={{item}} state=installed
+  yum: pkg={{item}} state=present
   with_items:
         - snappy 
         - snappy-devel
 
 - name: "Install lzo compression packages via yum"
-  yum: pkg={{item}} state=installed
+  yum: pkg={{item}} state=present
   with_items:
         - lzo 
         - lzo-devel 

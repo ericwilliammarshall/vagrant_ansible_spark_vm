@@ -1,7 +1,7 @@
 ---
 
 
-- name: "Be sure libselinux-python are installed to avoid errors"
+- name: "Be sure libselinux-python are ime=nstalled to avoid errors"
   yum: name=libselinux-python state=present
 
 - name: "Disable iptables"
@@ -14,18 +14,48 @@
 - name: "Disable ip6tables"
   service: name=ip6tables enabled=no state=stopped
 
-- name: "Minimize Swapping with swappiness=1"
-  sysctl: name=vm.swappiness value=1 state=present reload=yes
-  ignore_errors: True
+- name: "Ensure US keybindings"
+  lineinfile: dest=/etc/sysconfig/i18n regexp="de_DE" line='LANG="en_US.UTF-8"'
+
+- name: "Ensure US keybindings"
+  lineinfile: dest=/etc/sysconfig/keyboard regexp="de" line='KEYTABLE="us"'
+
+#- name: "Minimize Swapping with swappiness=1"
+#  sysctl: name=vm.swappiness value=1 state=present reload=yes
+#  ignore_errors: True
 
 - name: "Install EPEL repo"
   yum: name=http://mirror.nexcess.net/epel/6/x86_64/epel-release-6-8.noarch.rpm state=present
+
+- name: "Install glibc-common"
+  yum: name="glibc-common" state=latest
+
+#- name: "Set locale to US"
+#  locale_gen: name=LANG=en_US.UTF-8 state=present
+
+- name: "Add gui"
+  #yum: name={{item}} state=present
+  yum: name='@KDE desktop' state=present
+  yum: name='@X Window System' state=present
+  yum: name='@Fonts' state=present
+
+- name: "Install firefox"
+  yum: name="firefox" state=latest
 
 - name: "Install wget"
   yum: name="wget" state=latest
 
 - name: "Install vim"
   yum: name="vim" state=latest
+
+- name: "Install emacs"
+  yum: name=emacs state=latest
+
+- name: "Install nano"
+  yum: name="nano" state=latest
+
+- name: "Install vim"
+  yum: name="emacs" state=latest
 
 - name: "Install build tools"
   yum: name="@Development tools" state=latest
@@ -38,3 +68,5 @@
 
 #- name: "Update all to latest o_O"
 #  yum: name=* state=latest
+
+

@@ -3,8 +3,14 @@
 - name: "add sparks user"
 #  user: name=sparks comment="login user" uid=1040  password='$6$rounds=100000$rzxXtss5UZnWAh4B$9atDlw/VLx9MyAgIzFatbv8.JTQYeTbJ4uc3XUA7YjOzdAS5f4ILwDVvg5B7RraYN/9HGeHo4bticWYghXKOT.'
 # passwd = ' ' < one blank space
-  user: name=sparks comment="login user" uid=1040  password='$6$h7CcXwO1$14ZA6qggoyS.ZqOvae1uBywWtXTlvW4kqi/oZHgVgO4IVuGdGRflDA/x1KCtWd5uKBjkNyu5q4vzGNVSHHddF1'
+#  user: name=sparks comment="login user" uid=1040  password='$6$h7CcXwO1$14ZA6qggoyS.ZqOvae1uBywWtXTlvW4kqi/oZHgVgO4IVuGdGRflDA/x1KCtWd5uKBjkNyu5q4vzGNVSHHddF1'
+
+# passwd = 'sparks' 
+  user: name=sparks comment="login user" uid=1040  password='$6$XIYuoS9P$qLTobhDEx0brx8JRFK0dZOszicUzGgkvAzN7TfnzrhAYfBHMs3DYK909x0kO8.wmmJupVpptT5R.vAqjH/L4q0' generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
 
 - name: "give user sudo access"
   lineinfile: "dest=/etc/sudoers state=present  line='sparks ALL=(ALL) NOPASSWD: ALL'"
 
+  # password ='root'
+- name: "Set root password"
+  user: name=root password='$6$/z9iyDxb$5WmoblsoSev50B8ZRyLLqnYecWFX2RS6hd6D9bpITcoK1GnttnqvSXfftL4QjQDIVzcAk7wNUcbfBF9gZQlTb/'
