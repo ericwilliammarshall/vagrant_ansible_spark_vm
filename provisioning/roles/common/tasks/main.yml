@@ -14,6 +14,12 @@
 - name: "Disable ip6tables"
   service: name=ip6tables enabled=no state=stopped
 
+- name: "Ensure US keyboard"
+  lineinfile: dest=/etc/grub.conf regexp="504.16.2" line='      kernel /vmlinuz-2.6.32-504.16.2.el6.x86_64 ro root=/dev/mapper/VolGroup-lv_root nomodeset rd_NO_LUKS rd_NO_MD rd_LVM_LV=VolGroup/lv_swap SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=us rd_LVM_LV=VolGroup/lv_root LANG=en_US.UTF-8 rd_NO_DM rhgb quiet'
+kernel /vmlinuz-2.6.32-504.el6.x86_64 ro root=/dev/mapper/VolGroup-lv_root nomodeset rd_NO_LUKS rd_NO_MD rd_LVM_LV=VolGroup/lv_swap SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=de rd_LVM_LV=VolGroup/lv_root LANG=de_DE.UTF-8 rd_NO_DM rhgb quiet
+- name: "Ensure US keyboard mark2"
+  lineinfile: dest=/etc/grub.conf regexp="504.el6" line='      kernel /vmlinuz-2.6.32-504.el6.x86_64 ro root=/dev/mapper/VolGroup-lv_root nomodeset rd_NO_LUKS rd_NO_MD rd_LVM_LV=VolGroup/lv_swap SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=us rd_LVM_LV=VolGroup/lv_root LANG=en_US.UTF-8 rd_NO_DM rhgb quiet'
+
 - name: "Ensure US keybindings"
   lineinfile: dest=/etc/sysconfig/i18n regexp="de_DE" line='LANG="en_US.UTF-8"'
 
