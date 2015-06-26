@@ -64,6 +64,9 @@ export SPARK_PID_DIR=/var/run/spark
 # - SPARK_IDENT_STRING  A string representing this instance of spark. (Default: $USER)
 # - SPARK_NICENESS      The scheduling priority for daemons. (Default: 0)`
 export PATH=/usr/local/scala/bin:/usr/local/spark/bin:/usr/local/spark/sbin:/usr/local/sbt/bin:$PATH
+export JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/hadoop/lib/native
+export SPARK_YARN_USER_ENV="JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH,LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
 if [ -d "/etc/tez/conf/" ]; then
 	export TEZ_CONF_DIR=/etc/tez/conf
 else

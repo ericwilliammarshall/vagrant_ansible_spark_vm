@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# chkconfig: - 98 02
+#
+# description: starts spark and hadoop services
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PATH=/usr/bin:/sbin:/bin:/usr/sbin
+export PATH
+
+RETVAL=0
+
+
+start() {
+    echo -n $"Starting hadoop and spark services: "
+    /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ start namenode
+    /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ start datanode
+    /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ start secondarynamenode
+    /usr/hdp/2.2.4.2-2/hadoop-yarn/sbin/yarn-daemon.sh --config /etc/hadoop/conf/ start resourcemanager
+    /usr/hdp/2.2.4.2-2/hadoop-yarn/sbin/yarn-daemon.sh --config /etc/hadoop/conf/ start nodemanager
+    /opt/spark/current/sbin/start-master.sh
+}
+
+stop() {
+    echo -n $"Stopping hadoop and spark services: "
+    /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ stop namenode
+    /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ stop datanode
+    /usr/hdp/2.2.4.2-2/hadoop/sbin/hadoop-daemon.sh --config /etc/hadoop/conf/ stop secondarynamenode
+    for proc in $(ps -ef | grep NodeManager | awk '{print $2}') ; do echo "stopping process $proc"; kill $proc ; done
+    for proc in $(ps -ef | grep ResourceManager | awk '{print $2}') ; do echo "stopping process $proc"; kill $proc ; done
+    for proc in $(ps -ef | grep -i spark | awk '{print $2}') ; do echo "stopping process $proc"; kill $proc ; done
+}
+
+
+restart() {
+    stop
+    start
+}
+
+
+case "$1" in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        restart
+    ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $RETVAL

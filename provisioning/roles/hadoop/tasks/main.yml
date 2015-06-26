@@ -120,8 +120,12 @@
 - name: "Link yarn-env.sh to /etc/profile.d"
   file: src=/etc/hadoop/conf/yarn-env.sh dest=/etc/profile.d/yarn-env.sh state=link
   
-#- name: "Setup and start hadoop"
-#  script: first-start.sh 
+- name: "Start hadoop script"
+  file: src=root/start.sh  dest=/root/start.sh mode=755
+
+- name: "Stop hadoop script"
+  file: src=root/stop.sh  dest=/root/stop.sh mode=755
+
 
 - name: "format hdfs file system"
   command: /usr/hdp/current/hadoop-hdfs-namenode/../hadoop/bin/hdfs namenode -format
